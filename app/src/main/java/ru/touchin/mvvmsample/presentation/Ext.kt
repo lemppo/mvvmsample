@@ -7,6 +7,6 @@ fun ImageView.loadUri(path: String?) {
     if (!path.isNullOrBlank())
         Glide.with(this.context)
                 .load(path)
-                .centerCrop()
+//                .centerCrop()
                 .into(this)
 }

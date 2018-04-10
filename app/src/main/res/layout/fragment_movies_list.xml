@@ -16,7 +16,7 @@
         app:titleTextColor="@android:color/white" />
 
     <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/srMovies"
+        android:id="@+id/refresh_movies"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -24,11 +24,13 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/rvMovies"
+            android:id="@+id/recycler_movies"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
-            android:padding="8dp" />
+            android:padding="8dp"
+            app:layoutManager="android.support.v7.widget.GridLayoutManager"
+            app:spanCount="2" />
     </android.support.v4.widget.SwipeRefreshLayout>
 
 </android.support.constraint.ConstraintLayout>

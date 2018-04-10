@@ -1,26 +1,26 @@
 package ru.touchin.mvvmsample.domain.global.models
 
-import android.content.Context
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import ru.touchin.mvvmsample.R
+import ru.touchin.mvvmsample.data.PrefsRepository
 import ru.touchin.mvvmsample.data.network.TMDApi
+import javax.inject.Inject
 
 /**
  * Author: Oksana Pokrovskaya
  * Email: lempo.developer@gmail.com
  */
-class ConfigurationModel(private val context: Context, private val api: TMDApi) {
+class ConfigurationRepository @Inject constructor(
+        private val api: TMDApi,
+        private val prefsRepository: PrefsRepository
+) {
 
     companion object {
-        val IMG_BASE_URL_KEY = "IMG_BASE_URL_KEY"
         var IMAGE_BASE_URL = ""
     }
 
     fun getConfiguration() =
             api
                     .configuration()
-                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .map {
                         val body = it.body()
@@ -34,12 +34,11 @@ class ConfigurationModel(private val context: Context, private val api: TMDApi) 
                                 in 3..Int.MAX_VALUE -> size = body.images.poster_sizes[2]
                             }
                             IMAGE_BASE_URL = body.images.base_url + size + "/"
-                            val prefs = context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-                            prefs.edit().apply { putString(IMG_BASE_URL_KEY, IMAGE_BASE_URL) }.apply()
+                            prefsRepository.imageBaseUrl = IMAGE_BASE_URL
                         }
                     }
                     .onErrorReturn {
-                        IMAGE_BASE_URL = context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE).getString(IMG_BASE_URL_KEY, "")
+                        IMAGE_BASE_URL = prefsRepository.imageBaseUrl
                         it.printStackTrace()
                     }
 }

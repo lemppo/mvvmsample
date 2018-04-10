@@ -28,8 +28,8 @@ class SplashFragment : BaseFragment() {
 
         val observer = Observer<Boolean> {
             if (it == true) {
-                activity?.startActivity(Intent(activity, MoviesActivity::class.java))
-                activity?.finish()
+                requireActivity().startActivity(Intent(activity, MoviesActivity::class.java))
+                requireActivity().finish()
             }
         }
         viewModel.ready.observe(this, observer)

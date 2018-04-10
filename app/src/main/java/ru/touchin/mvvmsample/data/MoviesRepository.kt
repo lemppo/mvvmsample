@@ -1,38 +1,33 @@
-package ru.touchin.mvvmsample.data.network
+package ru.touchin.mvvmsample.data
 
 import android.arch.lifecycle.LiveData
 import android.arch.paging.LivePagedListBuilder
 import android.arch.paging.PagedList
-import android.content.Context
 import android.support.annotation.MainThread
 import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
 import retrofit2.Response
 import ru.touchin.kotlinsamples.data.database.AppDatabase
 import ru.touchin.kotlinsamples.data.database.Movie
 import ru.touchin.mvvmsample.data.network.response.MoviesResponse
-import ru.touchin.mvvmsample.R
+import ru.touchin.mvvmsample.data.network.TMDApi
 import ru.touchin.mvvmsample.domain.moviedetails.MovieWrapper
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Author: Oksana Pokrovskaya
  * Email: lempo.developer@gmail.com
  */
-class MoviesRepository @Inject internal constructor(var api: TMDApi,
-                                                    var db: AppDatabase,
-                                                    var context: Context) {
+@Singleton
+class MoviesRepository @Inject constructor(
+        private val api: TMDApi,
+        private val db: AppDatabase,
+        private val prefsRepository: PrefsRepository) {
 
     companion object {
         const val POPULAR = 1
         const val TOP_RATED = 2
     }
-
-    private val prefs by lazy { context.getSharedPreferences(context.getString(R.string.preference_file_key),
-            Context.MODE_PRIVATE) }
-    private val modeKey by lazy { context.getString(R.string.preference_mode_key) }
-    private val pageKey by lazy { context.getString(R.string.preference_page_key) }
-    private val totalPagesKey by lazy { context.getString(R.string.preference_total_pages_key) }
 
     fun movies(pageSize: Int): LiveData<PagedList<Movie>> {
         val boundaryCallback = MovieBoundaryCallback(this)
@@ -48,9 +43,9 @@ class MoviesRepository @Inject internal constructor(var api: TMDApi,
     }
 
     fun loadNextPage() {
-        val mode = prefs.getInt(modeKey, POPULAR)
-        val page = prefs.getInt(pageKey, 0)
-        val totalPages = prefs.getInt(totalPagesKey, 2)
+        val mode = prefsRepository.mode
+        val page = prefsRepository.page
+        val totalPages = prefsRepository.totalPages
         if (page + 1 >= totalPages)
             return
 
@@ -60,16 +55,12 @@ class MoviesRepository @Inject internal constructor(var api: TMDApi,
             else -> throw IllegalArgumentException("Unknown mode")
         }
         response
-                .subscribeOn(Schedulers.io())
                 .subscribe({
                     val body = it.body()
                     if (it.isSuccessful && body != null) {
-                        prefs.edit().apply {
-                            putInt(modeKey, mode)
-                            putInt(pageKey, body.page)
-                            putInt(totalPagesKey, body.total_pages)
-                            apply()
-                        }
+                        prefsRepository.mode = mode
+                        prefsRepository.page = body.page
+                        prefsRepository.totalPages = body.total_pages
                         db.movieDao().insertAll(body.results)
                     } else {
                         // todo error
@@ -81,7 +72,7 @@ class MoviesRepository @Inject internal constructor(var api: TMDApi,
     }
 
     fun loadFirstPage() {
-        val mode = prefs.getInt(modeKey, POPULAR)
+        val mode = prefsRepository.mode
 
         val response: Single<Response<MoviesResponse>> = when (mode) {
             POPULAR -> api.popularMovies(1)
@@ -89,16 +80,12 @@ class MoviesRepository @Inject internal constructor(var api: TMDApi,
             else -> throw IllegalArgumentException("Unknown mode")
         }
         response
-                .subscribeOn(Schedulers.io())
                 .subscribe({
                     val body = it.body()
                     if (it.isSuccessful && body != null) {
-                        prefs.edit().apply {
-                            putInt(modeKey, mode)
-                            putInt(pageKey, body.page)
-                            putInt(totalPagesKey, body.total_pages)
-                            apply()
-                        }
+                        prefsRepository.mode = mode
+                        prefsRepository.page = body.page
+                        prefsRepository.totalPages = body.total_pages
                         db.clearAllTables()
                         db.movieDao().insertAll(body.results)
                     } else {

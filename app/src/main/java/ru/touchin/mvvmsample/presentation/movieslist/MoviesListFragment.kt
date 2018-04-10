@@ -7,12 +7,11 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.*
 import ru.touchin.kotlinsamples.data.database.Movie
 import ru.touchin.mvvmsample.R
-import ru.touchin.mvvmsample.data.network.MoviesRepository
+import ru.touchin.mvvmsample.data.MoviesRepository
 import ru.touchin.mvvmsample.presentation.activities.MoviesActivity
 import ru.touchin.mvvmsample.presentation.base.BaseFragment
 import ru.touchin.mvvmsample.presentation.moviedetails.MovieDetailsFragment
@@ -31,18 +30,18 @@ class MoviesListFragment : BaseFragment() {
         return inflater.inflate(R.layout.fragment_movies_list, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
 
         viewModel = ViewModelProviders
                 .of(this, viewModelFactory)
                 .get(MoviesListViewModel::class.java)
 
-        (activity as AppCompatActivity).setSupportActionBar(view.findViewById(R.id.toolbar))
+        (activity as AppCompatActivity).setSupportActionBar(view!!.findViewById(R.id.toolbar))
         setHasOptionsMenu(true)
         setMenuVisibility(true)
 
-        val srMovies = view.findViewById<SwipeRefreshLayout>(R.id.srMovies)
+        val srMovies = view!!.findViewById<SwipeRefreshLayout>(R.id.refresh_movies)
         srMovies.setOnRefreshListener {
             viewModel.refreshMovies()
         }
@@ -57,8 +56,7 @@ class MoviesListFragment : BaseFragment() {
             srMovies.isRefreshing = false
         })
 
-        val rvMovies: RecyclerView = view.findViewById(R.id.rvMovies)
-        rvMovies.layoutManager = GridLayoutManager(activity, 2)
+        val rvMovies: RecyclerView = view!!.findViewById(R.id.recycler_movies)
         rvMovies.adapter = adapter
     }
 

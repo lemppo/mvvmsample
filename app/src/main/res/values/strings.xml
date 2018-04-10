@@ -21,4 +21,5 @@
     <string name="preference_mode_key">mode</string>
     <string name="preference_page_key">page</string>
     <string name="preference_total_pages_key">total_pages</string>
+    <string name="preference_base_url_key">base_url</string>
 </resources>

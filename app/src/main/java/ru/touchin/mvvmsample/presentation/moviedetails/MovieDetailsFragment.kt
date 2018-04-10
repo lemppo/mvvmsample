@@ -32,20 +32,19 @@ class MovieDetailsFragment : BaseFragment() {
         return inflater.inflate(R.layout.fragment_movie_details, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders
-                        .of(this, viewModelFactory)
-                        .get(MovieDetailsViewModel::class.java)
+                .of(this, viewModelFactory)
+                .get(MovieDetailsViewModel::class.java)
 
         if (viewModel.movieDetailsModel.value == null && arguments != null) {
             viewModel.getMovie(arguments!!.getInt("movieId"))
         }
 
-        (activity as AppCompatActivity).setSupportActionBar(view.findViewById(R.id.toolbar))
+        (activity as AppCompatActivity).setSupportActionBar(view!!.findViewById(R.id.toolbar))
 
-        progress = view.findViewById(R.id.view_controller_movie_details_progress)
+        progress = view!!.findViewById(R.id.view_controller_movie_details_progress)
         progress.visibility = View.VISIBLE
 
         viewModel.movieDetailsModel.observe(this, Observer {

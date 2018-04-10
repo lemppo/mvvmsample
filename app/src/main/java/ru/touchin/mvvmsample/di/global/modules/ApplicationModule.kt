@@ -7,6 +7,7 @@ import dagger.Module
 import dagger.Provides
 import ru.touchin.kotlinsamples.data.database.AppDatabase
 import ru.touchin.mvvmsample.MvvmSampleApp
+import javax.inject.Singleton
 
 @Module
 class ApplicationModule(private val application: MvvmSampleApp) {
@@ -18,6 +19,7 @@ class ApplicationModule(private val application: MvvmSampleApp) {
     fun provideContext(): Context = application
 
     @Provides
+    @Singleton
     fun provideDatabase(): AppDatabase = Room.databaseBuilder(application,
             AppDatabase::class.java, "android-kotlin-samples-db").build()
 }

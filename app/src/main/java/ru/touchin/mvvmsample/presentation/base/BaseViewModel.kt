@@ -1,7 +1,6 @@
 package ru.touchin.mvvmsample.presentation.base
 
-import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
+import android.arch.lifecycle.ViewModel
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe
@@ -12,7 +11,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.internal.functions.Functions
 import io.reactivex.subjects.BehaviorSubject
 
-abstract class BaseViewModel(application: Application) : AndroidViewModel(application) {
+abstract class BaseViewModel() : ViewModel() {
 
     private companion object {
         private val onErrorMissingConsumer: (Throwable) -> Unit = { Functions.ON_ERROR_MISSING.accept(it) }

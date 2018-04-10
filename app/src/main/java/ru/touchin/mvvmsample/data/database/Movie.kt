@@ -9,13 +9,13 @@ import java.util.*
  * Email: lempo.developer@gmail.com
  */
 @Entity()
-class Movie(
-        var id: Int = 0,
-        var vote_average: Float = 0f,
-        var title: String = "",
-        var overview: String = "",
-        var release_date: Date = Date(),
-        var poster_path: String = "",
+data class Movie(
+        val id: Int,
+        val vote_average: Float,
+        val title: String,
+        val overview: String,
+        val release_date: Date,
+        val poster_path: String,
         @PrimaryKey(autoGenerate = true)
-        var response_order: Int = 0
+        val response_order: Int
 )

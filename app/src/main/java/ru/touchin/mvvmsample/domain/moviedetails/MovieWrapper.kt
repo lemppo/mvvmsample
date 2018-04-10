@@ -1,7 +1,7 @@
 package ru.touchin.mvvmsample.domain.moviedetails
 
 import ru.touchin.kotlinsamples.data.database.Movie
-import ru.touchin.mvvmsample.domain.global.models.ConfigurationModel
+import ru.touchin.mvvmsample.domain.global.models.ConfigurationRepository
 import java.io.Serializable
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
@@ -32,5 +32,5 @@ class MovieWrapper(
     val ratingString = DecimalFormat("#.#").format(rating)
     val dateString = SimpleDateFormat("dd.MM.yyyy", Locale.US).format(releaseDate)
 
-    val imagePath = ConfigurationModel.IMAGE_BASE_URL + posterPath
+    val imagePath = ConfigurationRepository.IMAGE_BASE_URL + posterPath
 }

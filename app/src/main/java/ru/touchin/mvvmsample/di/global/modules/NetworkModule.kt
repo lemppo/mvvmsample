@@ -3,6 +3,7 @@ package ru.touchin.mvvmsample.di.global.modules
 import com.google.gson.*
 import dagger.Module
 import dagger.Provides
+import io.reactivex.schedulers.Schedulers
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -32,7 +33,7 @@ class NetworkModule {
             Retrofit.Builder()
                     .baseUrl(BuildConfig.BASE_URL)
                     .client(client)
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .build()
                     .create(TMDApi::class.java)!!

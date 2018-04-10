@@ -1,21 +1,19 @@
 package ru.touchin.mvvmsample.presentation.splash
 
-import android.app.Application
-import android.arch.lifecycle.MutableLiveData
+import ru.touchin.mvvmsample.domain.global.models.ConfigurationRepository
 import ru.touchin.mvvmsample.presentation.base.BaseViewModel
+import ru.touchin.mvvmsample.presentation.base.SingleLiveEvent
 import javax.inject.Inject
-import ru.touchin.mvvmsample.domain.splash.SplashInteractor
 
-class SplashViewModel @Inject internal constructor(application: Application,
-                                                   var splashInteractor: SplashInteractor) : BaseViewModel(application) {
+class SplashViewModel @Inject constructor(private val configuration: ConfigurationRepository) : BaseViewModel() {
 
-    var ready: MutableLiveData<Boolean> = MutableLiveData()
+    var ready: SingleLiveEvent<Boolean> = SingleLiveEvent()
 
     init {
         getConfiguration()
     }
 
-    fun getConfiguration() = untilDestroy(splashInteractor.getConfiguration(),
+    fun getConfiguration() = untilDestroy(configuration.getConfiguration(),
              { ready.value = true },
              { ready.value = true })
 }
