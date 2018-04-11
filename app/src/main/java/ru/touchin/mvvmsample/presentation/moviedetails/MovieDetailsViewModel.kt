@@ -1,7 +1,6 @@
 package ru.touchin.mvvmsample.presentation.moviedetails
 
 import android.arch.lifecycle.MutableLiveData
-import io.reactivex.android.schedulers.AndroidSchedulers
 import ru.touchin.mvvmsample.domain.moviedetails.MovieDetailsInteractor
 import ru.touchin.mvvmsample.domain.moviedetails.MovieDetailsModel
 import ru.touchin.mvvmsample.presentation.base.BaseViewModel
@@ -16,5 +15,5 @@ class MovieDetailsViewModel @Inject constructor(private val movieDetailsInteract
         movieDetailsModel.value = it
     }, {
         movieDetailsModel.value =  MovieDetailsModel.Error(it)
-    })
+    }, {})
 }

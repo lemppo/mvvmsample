@@ -1,17 +1,17 @@
 package ru.touchin.mvvmsample
 
 import android.app.Application
-import android.arch.lifecycle.ViewModelProvider
 import ru.touchin.mvvmsample.di.global.ApplicationComponent
 import ru.touchin.mvvmsample.di.global.DaggerApplicationComponent
 import ru.touchin.mvvmsample.di.global.modules.ApplicationModule
 import ru.touchin.mvvmsample.di.global.modules.NetworkModule
+import ru.touchin.mvvmsample.di.viewmodel.ViewModelFactory
 import javax.inject.Inject
 
 class MvvmSampleApp : Application() {
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModelFactory: ViewModelFactory
 
     companion object {
         lateinit var instance: MvvmSampleApp

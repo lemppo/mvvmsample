@@ -7,74 +7,67 @@ import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import io.reactivex.internal.functions.Functions
 import io.reactivex.subjects.BehaviorSubject
 
-abstract class BaseViewModel() : ViewModel() {
+abstract class BaseViewModel : ViewModel() {
 
-    private companion object {
-        private val onErrorMissingConsumer: (Throwable) -> Unit = { Functions.ON_ERROR_MISSING.accept(it) }
-    }
+    private val subscriptions = CompositeDisposable()
 
     private val isCreatedSubject = BehaviorSubject.createDefault<Boolean>(true)
 
-    protected fun <T> untilDestroy(
-            observable: Observable<T>,
-            onNext: (T) -> Unit = { },
-            onError: (Throwable) -> Unit = onErrorMissingConsumer,
-            onComplete: () -> Unit = { }
-    ): Disposable = innerUntilDestroy(observable, onNext, onError, onComplete)
-
-    protected fun <T> untilDestroy(
+    fun <T> untilDestroy(
             flowable: Flowable<T>,
-            onNext: (T) -> Unit = { },
-            onError: (Throwable) -> Unit = onErrorMissingConsumer,
-            onComplete: () -> Unit = { }
-    ): Disposable = innerUntilDestroy(flowable.toObservable(), onNext, onError, onComplete)
+            onNextAction: (T) -> Unit,
+            onErrorAction: (Throwable) -> Unit,
+            onCompletedAction: () -> Unit
+    ): Disposable = flowable
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(onNextAction, onErrorAction, onCompletedAction)
+            .also { subscriptions.add(it) }
 
-    protected fun <T> untilDestroy(
+    fun <T> untilDestroy(
+            observable: Observable<T>,
+            onNextAction: (T) -> Unit,
+            onErrorAction: (Throwable) -> Unit,
+            onCompletedAction: () -> Unit
+    ): Disposable = observable
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(onNextAction, onErrorAction, onCompletedAction)
+            .also { subscriptions.add(it) }
+
+    fun <T> untilDestroy(
             single: Single<T>,
-            onSuccess: (T) -> Unit = { },
-            onError: (Throwable) -> Unit = onErrorMissingConsumer
-    ): Disposable = innerUntilDestroy(single.toObservable(), onSuccess, onError, { })
+            onSuccessAction: (T) -> Unit,
+            onErrorAction: (Throwable) -> Unit
+    ): Disposable = single
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(onSuccessAction, onErrorAction)
+            .also { subscriptions.add(it) }
 
-    protected fun untilDestroy(
+    fun untilDestroy(
             completable: Completable,
-            onComplete: () -> Unit = { },
-            onError: (Throwable) -> Unit = onErrorMissingConsumer
-    ): Disposable = innerUntilDestroy(completable.toObservable<Any>(), { }, onError, onComplete)
+            onCompletedAction: () -> Unit,
+            onErrorAction: (Throwable) -> Unit
+    ): Disposable = completable
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(onCompletedAction, onErrorAction)
+            .also { subscriptions.add(it) }
 
-    protected fun <T> untilDestroy(
+    fun <T> untilDestroy(
             maybe: Maybe<T>,
-            onSuccess: (T) -> Unit = { },
-            onError: (Throwable) -> Unit = onErrorMissingConsumer,
-            onComplete: () -> Unit = { }
-    ): Disposable = innerUntilDestroy(maybe.toObservable(), onSuccess, onError, onComplete)
-
-    private fun <T> innerUntilDestroy(
-            observable: Observable<T>, onNext: (T) -> Unit, onError: (Throwable) -> Unit, onCompleted: () -> Unit = { }): Disposable {
-        val actualObservable = observable
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnComplete(onCompleted)
-                .doOnNext(onNext)
-                .doOnError(onError)
-        return isCreatedSubject
-                .firstOrError()
-                .flatMapObservable { created -> if (created) actualObservable else Observable.empty() }
-                .takeUntil(isCreatedSubject.filter { isCreated -> !isCreated })
-                .onErrorResumeNext { throwable: Throwable ->
-                    if (throwable is RuntimeException) {
-                        // todo
-//                        Lc.assertion(throwable)
-                    }
-                    Observable.empty<T>()
-                }
-                .subscribe()
-    }
+            onSuccessAction: (T) -> Unit,
+            onErrorAction: (Throwable) -> Unit,
+            onCompletedAction: () -> Unit
+    ): Disposable = maybe
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(onSuccessAction, onErrorAction, onCompletedAction)
+            .also { subscriptions.add(it) }
 
     override fun onCleared() {
         isCreatedSubject.onNext(false)
+        subscriptions.dispose()
     }
 
 }
