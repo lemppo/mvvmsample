@@ -12,28 +12,27 @@ android {
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    defaultConfig {
+        buildConfigField "String", "BASE_URL", '\"https://api.themoviedb.org/3/\"'
+        buildConfigField "String", "API_KEY", '\"d45bcef740f5aa4cc4de87a477ed5641\"'
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "BASE_URL", '\"https://api.themoviedb.org/3/\"'
-            buildConfigField "String", "API_KEY", '\"d45bcef740f5aa4cc4de87a477ed5641\"'
         }
         debug {
             minifyEnabled false
             shrinkResources false
             versionNameSuffix ".debug"
-            buildConfigField "String", "BASE_URL", '\"https://api.themoviedb.org/3/\"'
-            buildConfigField "String", "API_KEY", '\"d45bcef740f5aa4cc4de87a477ed5641\"'
         }
     }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.android.support:appcompat-v7:27.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     testImplementation 'junit:junit:4.12'

@@ -12,8 +12,8 @@ import ru.touchin.mvvmsample.presentation.splash.SplashViewModel
 @Module
 interface ViewModelModule {
 
-    @Binds
-    fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory
+//    @Binds
+//    fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds
     @IntoMap
