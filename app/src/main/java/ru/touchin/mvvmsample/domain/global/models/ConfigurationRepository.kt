@@ -4,11 +4,13 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import ru.touchin.mvvmsample.data.PrefsRepository
 import ru.touchin.mvvmsample.data.network.TMDApi
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Author: Oksana Pokrovskaya
  * Email: lempo.developer@gmail.com
  */
+@Singleton
 class ConfigurationRepository @Inject constructor(
         private val api: TMDApi,
         private val prefsRepository: PrefsRepository

@@ -12,8 +12,6 @@ android {
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
-    }
-    defaultConfig {
         buildConfigField "String", "BASE_URL", '\"https://api.themoviedb.org/3/\"'
         buildConfigField "String", "API_KEY", '\"d45bcef740f5aa4cc4de87a477ed5641\"'
     }

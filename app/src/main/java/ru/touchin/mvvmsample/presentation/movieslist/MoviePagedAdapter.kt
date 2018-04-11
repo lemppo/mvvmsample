@@ -21,7 +21,7 @@ class MoviePagedAdapter : DelegatedPagedListAdapter<Movie>(DIFF_CALLBACK) {
             override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean =
                     oldItem.id == newItem.id
 
-            override fun areContentsTheSame(oldItem: Movie?, newItem: Movie?): Boolean =
+            override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean =
                     oldItem == newItem
         }
 

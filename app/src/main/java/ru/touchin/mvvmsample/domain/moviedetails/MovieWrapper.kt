@@ -11,13 +11,13 @@ import java.util.*
  * Author: Oksana Pokrovskaya
  * Email: lempo.developer@gmail.com
  */
-class MovieWrapper(
-        var id: Int = 0,
-        var rating: Float = 0f,
-        var title: String = "",
-        var overview: String = "",
-        var releaseDate: Date = Date(),
-        var posterPath: String = ""
+data class MovieWrapper(
+        val id: Int = 0,
+        val rating: Float = 0f,
+        val title: String = "",
+        val overview: String = "",
+        val releaseDate: Date = Date(),
+        val posterPath: String = ""
 ) : Serializable {
 
     companion object {
